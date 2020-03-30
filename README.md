@@ -15,7 +15,7 @@
 https://github.com/pluto0x0/wordchecker.git
 ```
 ## Demo
-https://word.yzzzf.xyz
+http://word.yzzzf.xyz
 
 ## License
 MIT
