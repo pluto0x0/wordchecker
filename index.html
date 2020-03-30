@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>单词</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/popper.js/1.15.0/umd/popper.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="https://cdn.staticfile.org/jquery-color/2.1.2/jquery.color.min.js"></script>
+    <script src="https://cdn.staticfile.org/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/5.12.1/css/all.min.css">
+    <script src="https://cdn.staticfile.org/pako/1.0.10/pako.min.js"></script>
+    <script src="data/static/bs4.pop.js"></script>
+    <link rel="stylesheet" href="data/static/bs4.pop.css">
+    <!--网页标题左侧显示-->
+    <link rel="icon" href="data/static/logo.png" type="image/x-icon">
+    <!--收藏夹显示图标-->
+    <link rel="shortcut icon" href="data/static/logo.png" type="image/x-icon">
+    <!-- iOS Safari -->
+    <link rel="apple-touch-icon" href="data /static/logo.png">
+    <!-- iOS Safari(旧) / Android標準ブラウザ(一部) -->
+    <link rel="apple-touch-icon-precomposed" href="data /static/logo.png">
+    <style>
+        .drop-before {
+            background-color: #C4FFBF !important;
+        }
+        
+        .in-drop-before {
+            border: dashed #57FF48;
+        }
+
+        .drop-after {
+            background-color: #FFC0C0 !important;
+        }
+
+        .in-drop-after {
+            border: dashed #FF8181;
+        }
+
+        .input-group {
+            margin-top: 2mm;
+            margin-bottom: 2mm;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="jumbotron">
+            <div class="row" id="init">
+                <div class="col-sm-4">
+                    <div class="card bg-light">
+                        <img class="card-img-top" src="data/xx6.png" alt="人教版英语选修六">
+                        <div class="card-body">
+                            <h3>
+                                选修六
+                            </h3>
+                            《人教版英语选修六》
+                            <div class="float-sm-right">
+                                <div class="btn-group">
+                                    <button class="btn btn-info btn-review" target="xx6">
+                                        <i class="fas fa-redo-alt"></i> 错题
+                                    </button>
+                                    <button class="btn btn-primary btn-load" target="xx6">
+                                        <i class="fas fa-file-download"></i> 载入
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="card bg-light">
+                        <img class="card-img-top" src="data/wkd.jpeg" alt="人教版英语选修六">
+                        <div class="card-body">
+                            <h3>
+                                维克多
+                            </h3>
+                            《维克多新高中英语词汇》
+                            <div class="float-sm-right">
+                                <div class="btn-group">
+                                    <button class="btn btn-info btn-review" target="wkd">
+                                        <i class="fas fa-redo-alt"></i> 错题
+                                    </button>
+                                    <button class="btn btn-primary btn-load" target="wkd">
+                                        <i class="fas fa-file-download"></i> 载入
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="card bg-light" style="height: 100%; min-height: 6cm;">
+                        <div class="card-body drop-before" id="drop">
+                            <div style="border-radius: 5px; width: 100%; height: 100%;" class="in-drop-before"
+                                id="in-drop"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="main" style="display: none;">
+                <div class="row">
+                    <div id="zh" style="min-height: 15mm; text-align: center; font-size: 8mm; width: 100%;"></div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-8">
+                        <div class="row" style="margin-top: 4mm;">
+                            <div class="col-sm-2">
+                                <button class="btn btn-primary" id="last" style="width: 100%;"><i
+                                        class="fas fa-chevron-circle-left"></i></button>
+                            </div>
+                            <div class="col-sm-5">
+                                <button class="btn btn-warning" id="skip" style="width: 100%;">
+                                    Skip <i class="far fa-hand-point-right"></i>
+                            </div>
+                            <div class="col-sm-5">
+                                <button class="btn btn-success" id="next" style="width: 100%;">
+                                    Submit <i class="fas fa-check"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="row" style="margin-top: 8mm;">
+                            <input type="text" class="form-control">
+                        </div>
+                        <div class="row">
+                            <textarea id="wrong" rows="10" style="width: 100%; margin-top: 4mm; margin-bottom: 4mm;"
+                                class="form-control" readonly="readonly"></textarea>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <button class="btn btn-warning" style="width: 100%;" id="clear-wrong"><i
+                                        class="fas fa-sync-alt"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="card" style="margin-top: 4mm;">
+                            <div class="card-body">
+                                <fieldset>
+                                    <legend>information</legend>
+                                    <i class="fas fa-book"></i> Unit <span id="unit"></span><br>
+                                    <i class="fas fa-list-ol"></i> No. <span id="id"></span><br>
+                                    <i class="fas fa-pen-nib"></i> Accept <span id="accept"></span><br>
+                                </fieldset>
+                                <br>
+                                <fieldset>
+                                    <legend>control</legend>
+                                    <div class="custom-control custom-switch">
+                                        <input type="checkbox" class="custom-control-input" id="customSwitch1">
+                                        <label class="custom-control-label" for="customSwitch1">朗读</label>
+                                    </div>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <div class="input-group-text"> <i class="fas fa-book"></i>&nbsp;Unit</div>
+                                        </div>
+                                        <input type="number" min="1" class="form-control" id="unit-num">
+                                    </div>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <div class="input-group-text"><i class="fas fa-list-ol"></i>&nbsp;No.</div>
+                                        </div>
+                                        <input type="number" min="1" class="form-control" id="id-num">
+                                    </div>
+                                </fieldset>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        var id = -1, unit = 1, data, cnt = 0, ac = 0, total = 0, filename = '';
+        wrong = new Object;
+        function refresh() {
+            $('#unit').text(unit);
+            $('#id').text(id + 1);
+            $('#accept').text(ac + ' / ' + total);
+            $('#zh').text(data.words[unit][id][1]);
+            $(':text').val("");
+            $(':text').attr('placeholder', data.words[unit][id][0][0]);
+
+            $('#id-num').attr('max', data.words[unit].length);
+            $('#id-num').val(id + 1);
+            $('#unit-num').val(unit);
+
+            $.cookie(filename, btoa('[' + unit + ',' + id + ']'), { expires: 7 });
+
+            if ($(':checkbox').is(':checked')) {
+                let audio = new Audio('http://dict.youdao.com/dictvoice?type=0&audio=' + data.words[unit][id][0]);
+                audio.play();
+            }
+        }
+        function init_wrong() {
+            wrong.unit = data.unit;
+            wrong.words = new Object;
+            for (var i = 1; i <= data.unit; i++)
+                wrong.words[i] = [];
+
+            if (localStorage.getItem(filename)) {
+                wrong = JSON.parse(pako.inflate(localStorage.getItem(filename), { to: 'string' }));
+                $('#wrong').val(JSON.stringify(wrong));
+            }
+            console.log(wrong);
+        }
+        function inc() {
+            if (id == -1) {
+                init_wrong();   ////////////
+                $('#unit-num').attr('max', data.unit);
+                $('#unit-num').val(unit);
+            }
+
+            id++, cnt++;
+            while (id == data.words[unit].length) {
+                id = 0;
+                unit++;
+                if (unit > data.unit)
+                    unit = 1;
+            }
+            refresh();
+        }
+        function goNext() {
+            if ($(':text').val().trim() == data.words[unit][id][0]) {
+                ac++;
+                $(':text').css('background-color', '#C1FADA');
+            }
+            else if ($(':text').val() == '.') {
+                $(':text').css('background-color', '#FEFFB2');
+                bs4pop.notice('您跳过了一个单词', { type: 'warning' });
+            }
+            else {
+                $(':text').css('background-color', '#FFC2BB');
+                wrong.words[unit].push(data.words[unit][id]);
+                $('#wrong').val(JSON.stringify(wrong));
+                localStorage.setItem(filename, pako.deflate(JSON.stringify(wrong), { to: 'string' }));
+
+                bs4pop.notice('答案为：<strong>' + data.words[unit][id][0] + '</strong>，已加入错题本', { type: 'danger' });
+            }
+            $(':text').animate({
+                backgroundColor: 'white'
+            }, 1000);
+            total++;
+            inc();
+        }
+        $(document).ready(function () {
+            $('#next').click(goNext);
+            $('#skip').click(inc);
+            $('#last').click(function () {
+                id--;
+                if (id == -1) {
+                    unit--;
+                    if (unit == 0)
+                        unit = data.unit;
+                    id = data.words[unit].length - 1;
+                }
+                refresh();
+            });
+
+            function load() {
+                $('#init').slideUp();
+                // $('#main').show();
+                $('#main').slideDown();
+
+                let coo = $.cookie(filename);
+                if(coo){
+                    let obj = JSON.parse(atob(coo));
+                    unit = obj[0];
+                    id = obj[1] - 1;
+                }
+
+                inc();
+            }
+            $('.btn-load').click(function () {
+                filename = $(this).attr('target');
+                $.ajax({
+                    url: 'data/' + filename + '.json'
+                }).done(function (dat) {
+                    console.log(dat);
+                    data = dat;
+                    load();
+                }).fail(function (err) {
+                    alert('错误！');
+                    console.log(err);
+                });
+            });
+            $(':text').keyup(function (event) {
+                if (event.keyCode == 13)
+                    goNext();
+            });
+            $('#clear-wrong').click(function () {
+                bs4pop.confirm('是否清空错题本？', function (sure) {
+                    if (sure) {
+                        localStorage.removeItem(filename);
+                        init_wrong();
+                        $('#wrong').val('');
+                    }
+                });
+            });
+            $('.btn-review').each(function () {
+                if (!localStorage.getItem($(this).attr('target'))) {
+                    $(this).attr('disabled', '');
+                }
+            });
+            $('.btn-review').click(function () {
+                filename = $(this).attr('target') + '_custom';
+                data = JSON.parse(pako.inflate(localStorage.getItem(filename), { to: 'string' }));
+                localStorage.removeItem(filename);
+                load();
+            });
+            $('#unit-num').change(function () {
+                unit = $(this).val();
+                if (id >= data.words[unit].length)
+                    id = data.words[unit].length - 1;
+                refresh();
+            });
+            $('#id-num').change(function () {
+                id = parseInt($(this).val()) - 1;
+                refresh();
+            });
+
+            var indrop = document.getElementById('in-drop');
+            indrop.addEventListener('dragover', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log(1);
+            });
+            indrop.addEventListener('dragenter', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log(2);
+                $('#drop').addClass('drop-after');
+                $('#drop').removeClass('drop-before');
+                $('#in-drop').addClass('in-drop-after');
+                $('#in-drop').removeClass('in-drop-before');
+            });
+            indrop.addEventListener("dragleave", function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log(3);
+                $('#drop').addClass('drop-before');
+                $('#drop').removeClass('drop-after');
+                $('#in-drop').addClass('in-drop-before');
+                $('#in-drop').removeClass('in-drop-after');
+            });
+            indrop.addEventListener('drop', function (e) {
+                //必须要禁用浏览器默认事件
+                e.preventDefault();
+                e.stopPropagation();
+                $('#drop').addClass('drop-before');
+                $('#drop').removeClass('drop-after');
+                $('#in-drop').addClass('in-drop-before');
+                $('#in-drop').removeClass('in-drop-after');
+                var files = this.files || e.dataTransfer.files;
+                var reader = new FileReader();
+                reader.readAsText(files[0], 'utf-8');
+                reader.onload = function (evt) {
+                    var text = evt.target.result;
+                    console.log(text);
+                    try {
+                        data = JSON.parse(text);
+                        load();
+                    }
+                    catch (err) {
+                        alert('错误：' + err);
+                    }
+                }
+            })
+        });
+    </script>
+</body>
+
+</html>
