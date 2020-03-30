@@ -11,9 +11,9 @@
 - 响应式设计
 
 ## Usage
-`` shell
+``` shell
 https://github.com/pluto0x0/wordchecker.git
-``
+```
 ## Demo
 https://word.yzzzf.xyz
 
