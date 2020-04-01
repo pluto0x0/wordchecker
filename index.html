@@ -174,7 +174,7 @@
         </div>
     </div>
     <script>
-        var id = -1, unit = 1, data, cnt = 0, ac = 0, total = 0, filename = '';
+        var id = -1, unit = 1, data, cnt = 0, ac = 0, total = 0, filename = '' ,first = true;
         wrong = new Object;
         function refresh() {
             $('#unit').text(unit);
@@ -208,7 +208,8 @@
             console.log(wrong);
         }
         function inc() {
-            if (id == -1) {
+            if (first) {
+                first = false;
                 init_wrong();   ////////////
                 $('#unit-num').attr('max', data.unit);
                 $('#unit-num').val(unit);

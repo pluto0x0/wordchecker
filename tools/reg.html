@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+
+<head>
+    <title>3500.txt在线处理</title>
+</head>
+
+<body>
+    <textarea id="raw" cols="30" rows="10"></textarea>
+    <textarea id="out" cols="30" rows="10"></textarea>
+    <script>
+        var raw = document.getElementById('raw');
+        var out = document.getElementById('out');
+        raw.onchange = function () {
+            var str = raw.value;
+            str = str.replace(/\([a-zA-Z ,]*\)/gm,'');
+            str = str.replace(/ $/gm,'');
+            str = str.replace(/\n\[.*\]\n/gm,'","');
+            str = str.replace(/^/gm,'["');
+            str = str.replace(/$/gm,'"],');
+            str = str.replace(/,$/g,'\n]');
+            str = str.replace(/^/g,'\n[');
+            
+            out.value = str;
+        }
+    </script>
+</body>
+
+</html>

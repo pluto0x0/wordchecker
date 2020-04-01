@@ -9,6 +9,7 @@
 - 进度记忆
 - 单词朗读
 - 响应式设计
+- 在线格式化：`/tools/reg.html`
 
 ## Usage
 ``` shell
