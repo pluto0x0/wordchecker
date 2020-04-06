@@ -307,8 +307,9 @@
                 }
             });
             $('.btn-review').click(function () {
-                filename = $(this).attr('target') + '_custom';
+                filename = $(this).attr('target');
                 data = JSON.parse(pako.inflate(localStorage.getItem(filename), { to: 'string' }));
+                filename += '_custom';
                 localStorage.removeItem(filename);
                 load();
             });
