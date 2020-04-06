@@ -9,8 +9,9 @@
 - 进度记忆
 - 单词朗读
 - 响应式设计
-- 在线格式化：`/tools/reg.html`
-- 在线单词总览/搜索：`/tools/search.html`
+- 在线工具: `/tools/`
+  - 在线 格式化：`/tools/reg.html`
+  - 在线单词总览/搜索：`/tools/search.html`
 
 ## Usage
 ``` shell
