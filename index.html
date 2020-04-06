@@ -15,6 +15,7 @@
     <script src="https://cdn.staticfile.org/pako/1.0.10/pako.min.js"></script>
     <script src="data/static/bs4.pop.js"></script>
     <link rel="stylesheet" href="data/static/bs4.pop.css">
+    <script src="data/static/md5.min.js"></script>
     <!--网页标题左侧显示-->
     <link rel="icon" href="data/static/logo.png" type="image/x-icon">
     <!--收藏夹显示图标-->
@@ -328,7 +329,7 @@
             indrop.addEventListener('dragover', function (e) {
                 e.preventDefault();
                 e.stopPropagation();
-                console.log(1);
+                // console.log(1);
             });
             indrop.addEventListener('dragenter', function (e) {
                 e.preventDefault();
@@ -364,6 +365,7 @@
                     console.log(text);
                     try {
                         data = JSON.parse(text);
+                        filename = md5(text);
                         load();
                     }
                     catch (err) {
