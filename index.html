@@ -16,13 +16,9 @@
     <script src="data/static/bs4.pop.js"></script>
     <link rel="stylesheet" href="data/static/bs4.pop.css">
     <script src="data/static/md5.min.js"></script>
-    <!--网页标题左侧显示-->
     <link rel="icon" href="data/static/logo.png" type="image/x-icon">
-    <!--收藏夹显示图标-->
     <link rel="shortcut icon" href="data/static/logo.png" type="image/x-icon">
-    <!-- iOS Safari -->
     <link rel="apple-touch-icon" href="data /static/logo.png">
-    <!-- iOS Safari(旧) / Android標準ブラウザ(一部) -->
     <link rel="apple-touch-icon-precomposed" href="data /static/logo.png">
     <style>
         .drop-before {
@@ -177,6 +173,8 @@
     <script>
         var id = -1, unit = 1, data, cnt = 0, ac = 0, total = 0, filename = '' ,first = true;
         wrong = new Object;
+
+        /* 刷新显示 */
         function refresh() {
             $('#unit').text(unit);
             $('#id').text(id + 1);
@@ -196,7 +194,9 @@
                 audio.play();
             }
         }
-        function init_wrong() {
+
+        /* 初始化错题本，保持原单词本结构 */
+        function initWrong() {
             wrong.unit = data.unit;
             wrong.words = new Object;
             for (var i = 1; i <= data.unit; i++)
@@ -208,10 +208,12 @@
             }
             console.log(wrong);
         }
+
+        /* 寻找下一个单词 */
         function inc() {
             if (first) {
                 first = false;
-                init_wrong();   ////////////
+                initWrong();
                 $('#unit-num').attr('max', data.unit);
                 $('#unit-num').val(unit);
             }
@@ -225,7 +227,11 @@
             }
             refresh();
         }
+
+        /* 判断输入正确性 */
         function goNext() {
+            if ($(':text').val().trim() === '') return;
+
             if ($(':text').val().trim() == data.words[unit][id][0]) {
                 ac++;
                 $(':text').css('background-color', '#C1FADA');
@@ -249,8 +255,13 @@
             inc();
         }
         $(document).ready(function () {
+            /* “提交”按钮 */
             $('#next').click(goNext);
+
+            /* “跳过”按钮 */
             $('#skip').click(inc);
+
+            /* “上一个”按钮 */
             $('#last').click(function () {
                 id--;
                 if (id == -1) {
@@ -262,9 +273,9 @@
                 refresh();
             });
 
+            /* 进入背单词状态 */
             function load() {
                 $('#init').slideUp();
-                // $('#main').show();
                 $('#main').slideDown();
 
                 let coo = $.cookie(filename);
@@ -276,6 +287,8 @@
 
                 inc();
             }
+
+            /* 载入单词 */
             $('.btn-load').click(function () {
                 filename = $(this).attr('target');
                 $.ajax({
@@ -289,24 +302,32 @@
                     console.log(err);
                 });
             });
+
+            /* 回车事件 */
             $(':text').keyup(function (event) {
                 if (event.keyCode == 13)
                     goNext();
             });
+
+            /* 清空错题本，删除localStorage */
             $('#clear-wrong').click(function () {
                 bs4pop.confirm('是否清空错题本？', function (sure) {
                     if (sure) {
                         localStorage.removeItem(filename);
-                        init_wrong();
+                        initWrong();
                         $('#wrong').val('');
                     }
                 });
             });
+
+            /* 禁用“复习按钮” */
             $('.btn-review').each(function () {
                 if (!localStorage.getItem($(this).attr('target'))) {
                     $(this).attr('disabled', '');
                 }
             });
+
+            /* “复习”按钮 */
             $('.btn-review').click(function () {
                 filename = $(this).attr('target');
                 data = JSON.parse(pako.inflate(localStorage.getItem(filename), { to: 'string' }));
@@ -314,49 +335,53 @@
                 localStorage.removeItem(filename);
                 load();
             });
+
+            /* “Unit”数字框 */
             $('#unit-num').change(function () {
                 unit = $(this).val();
                 if (id >= data.words[unit].length)
                     id = data.words[unit].length - 1;
                 refresh();
             });
+
+            /* “Id”数字框 */
             $('#id-num').change(function () {
                 id = parseInt($(this).val()) - 1;
                 refresh();
             });
 
-            var indrop = document.getElementById('in-drop');
+            /* 处理拖放事件 */
+            var indrop = document.getElementById('in-drop'),
+                dropOuter = $('#drop'),
+                dropInner = $('#in-drop');
             indrop.addEventListener('dragover', function (e) {
                 e.preventDefault();
                 e.stopPropagation();
-                // console.log(1);
             });
             indrop.addEventListener('dragenter', function (e) {
                 e.preventDefault();
                 e.stopPropagation();
-                console.log(2);
-                $('#drop').addClass('drop-after');
-                $('#drop').removeClass('drop-before');
-                $('#in-drop').addClass('in-drop-after');
-                $('#in-drop').removeClass('in-drop-before');
+                dropOuter.addClass('drop-after');
+                dropOuter.removeClass('drop-before');
+                dropInner.addClass('in-drop-after');
+                dropInner.removeClass('in-drop-before');
             });
             indrop.addEventListener("dragleave", function (e) {
                 e.preventDefault();
                 e.stopPropagation();
-                console.log(3);
-                $('#drop').addClass('drop-before');
-                $('#drop').removeClass('drop-after');
-                $('#in-drop').addClass('in-drop-before');
-                $('#in-drop').removeClass('in-drop-after');
+                dropOuter.addClass('drop-before');
+                dropOuter.removeClass('drop-after');
+                dropInner.addClass('in-drop-before');
+                dropInner.removeClass('in-drop-after');
             });
             indrop.addEventListener('drop', function (e) {
-                //必须要禁用浏览器默认事件
+                // 必须要禁用浏览器默认事件
                 e.preventDefault();
                 e.stopPropagation();
-                $('#drop').addClass('drop-before');
-                $('#drop').removeClass('drop-after');
-                $('#in-drop').addClass('in-drop-before');
-                $('#in-drop').removeClass('in-drop-after');
+                dropOuter.addClass('drop-before');
+                dropOuter.removeClass('drop-after');
+                dropInner.addClass('in-drop-before');
+                dropInner.removeClass('in-drop-after');
                 var files = this.files || e.dataTransfer.files;
                 var reader = new FileReader();
                 reader.readAsText(files[0], 'utf-8');
