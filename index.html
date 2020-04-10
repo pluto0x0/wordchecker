@@ -143,7 +143,7 @@
                             <div class="card-body">
                                 <fieldset>
                                     <legend>information</legend>
-                                    <i class="fas fa-book"></i> Unit <span id="unit"></span><br>
+                                    <i class="fas fa-book"></i> Unit <span id="unit"></span> <strong id="comment"></strong><br>
                                     <i class="fas fa-list-ol"></i> No. <span id="id"></span><br>
                                     <i class="fas fa-pen-nib"></i> Accept <span id="accept"></span><br>
                                 </fieldset>
@@ -181,6 +181,7 @@
         /* 刷新显示 */
         function refresh() {
             $('#unit').text(unit);
+            $('#comment').text(data.comment[unit]);
             $('#id').text(id + 1);
             $('#accept').text(ac + ' / ' + total);
             $('#zh').text(data.words[unit][id][1]);
