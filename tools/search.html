@@ -13,9 +13,10 @@
         <input v-model="search">
         <details v-for="(unit, index) in word.words">
             <summary>Unit {{ index }} <strong> {{ word.comment[index] }} </strong></summary>
-            <ul v-for="single in unit" v-if="match(single[0]) | match(single[1])">
-                <li>{{ single[0] }} <br> {{ single[1] }}</li>
-            </ul>
+            <dl v-for="single in unit" v-if="match(single[0]) | match(single[1])">
+                <dt>{{ single[0] }}</dt>
+                <dd>{{ single[1] }}</dd>
+            </dl>
         </details>
     </div>
 
