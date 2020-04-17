@@ -4,16 +4,19 @@
     <title>单词搜索</title>
     <script src="https://cdn.staticfile.org/vue/2.6.11/vue.min.js"></script>
     <script src="https://cdn.staticfile.org/axios/0.19.2/axios.min.js"></script>
-    <link rel="shortcut icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJAQMAAADaX5RTAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAAAGUExURf///wAAAFXC034AAAAbSURBVAjXY7BgYHBhYGiCISDbioGBkYGBoQEAKw4DAsroNrgAAAAASUVORK5CYII=" type="image/x-icon">
+    <link rel="shortcut icon"
+        href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJAQMAAADaX5RTAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAAAGUExURf///wAAAFXC034AAAAbSURBVAjXY7BgYHBhYGiCISDbioGBkYGBoQEAKw4DAsroNrgAAAAASUVORK5CYII="
+        type="image/x-icon">
 </head>
 
 <body>
     <div id="app">
         <button v-for="file in filegroup" v-on:click="load(file)">{{ file }}</button>
+        <button v-on:click="open" v-if="loaded">{{ opened ? 'Close' : 'Open'}} All</button>
         <input v-model="search">
         <details v-for="(unit, index) in word.words">
             <summary>Unit {{ index }} <strong> {{ word.comment[index] }} </strong></summary>
-            <dl v-for="single in unit" v-if="match(single[0]) | match(single[1])">
+            <dl v-for="single in unit" v-show="match(single[0]) | match(single[1])">
                 <dt>{{ single[0] }}</dt>
                 <dd>{{ single[1] }}</dd>
             </dl>
@@ -26,17 +29,34 @@
             data: {
                 filegroup: ['xx6', 'wkd'],
                 word: new Object(),
-                search: ''
+                search: '',
+                opened: false,
+                loaded: false
             },
             methods: {
                 load: function (file) {
                     axios.get('../data/' + file + '.json')
-                        .then(response  => {
+                        .then(response => {
                             this.word = response.data;
+                            this.loaded = true;
                         });
                 },
-                match: function(str){
+                match: function (str) {
                     return str === '' | str.indexOf(this.search) != -1;
+                },
+                open: function () {
+                    let ele = document.getElementsByTagName('details');
+                    if (this.opened) {
+                        for (var i = 0; i < ele.length; i++) {
+                            ele[i].removeAttribute('open');
+                        }
+                    }
+                    else {
+                        for (var i = 0; i < ele.length; i++) {
+                            ele[i].setAttribute('open', null);
+                        }
+                    }
+                    this.opened = !this.opened;
                 }
             }
         })
