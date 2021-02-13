@@ -244,6 +244,8 @@
 
         /* 初始化错题本，保持原单词本结构 */
         function initWrong() {
+            wrong.comment = data.comment
+            // @20210213
             wrong.unit = data.unit;
             wrong.words = new Object;
             for (var i = 1; i <= data.unit; i++)
